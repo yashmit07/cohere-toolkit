@@ -1,6 +1,6 @@
 'use client';
 
-import { PropsWithChildren, useState } from 'react';
+import { PropsWithChildren, useState, useEffect } from 'react';
 
 import { MobileHeader } from '@/components/Global';
 import {
@@ -12,9 +12,15 @@ import {
   ShowStepsToggle,
   Tabs,
   Text,
+  Input,
+  InputLabel,
+  Dropdown,
+  Box,
+  Notification,
 } from '@/components/UI';
-import { TOOL_GITHUB_ID, TOOL_GMAIL_ID, TOOL_SHAREPOINT_ID, TOOL_SLACK_ID } from '@/constants';
+import { TOOL_GITHUB_ID, TOOL_GMAIL_ID, TOOL_SHAREPOINT_ID, TOOL_SLACK_ID, SUPPORTED_LANGUAGES, LANGUAGE } from '@/constants';
 import { cn } from '@/utils';
+import { useUserPreferences } from '@/stores';
 
 import { Connection } from './Connection';
 
@@ -92,14 +98,107 @@ const Advanced: React.FC = () => (
   </Wrapper>
 );
 
-const Profile: React.FC = () => (
-  <Wrapper>
-    <Text styleAs="h5" className="mb-6">
-      User Profile
-    </Text>
-    <Button label="Log out" href="/logout" kind="secondary" icon="sign-out" theme="default" />
-  </Wrapper>
-);
+const Profile: React.FC = () => {
+  const { name, language, setName, setLanguage } = useUserPreferences();
+  const [nameInput, setNameInput] = useState(name || '');
+  const [selectedLanguage, setSelectedLanguage] = useState<LANGUAGE | null>(language);
+  const [showUpdateNotif, setShowUpdateNotif] = useState(false);
+
+  useEffect(() => {
+    setNameInput(name || '');
+    setSelectedLanguage(language);
+  }, [name, language]);
+
+  const handleUpdate = () => {
+    if (nameInput.trim()) {
+      setName(nameInput.trim());
+    }
+    if (selectedLanguage) {
+      setLanguage(selectedLanguage);
+    }
+    setShowUpdateNotif(true);
+    setTimeout(() => setShowUpdateNotif(false), 3000);
+  };
+
+  return (
+    <>
+      <Notification 
+        show={showUpdateNotif}
+        onHide={() => setShowUpdateNotif(false)}
+        theme="default"
+        duration={2000}
+      >
+        Profile settings updated
+      </Notification>
+
+      <Wrapper>
+        <Text styleAs="h5" className="mb-6">
+          User Profile
+        </Text>
+
+        <Box>
+          <div className="space-y-6">
+            <div className="grid grid-cols-2 gap-6">
+              {/* Name Input */}
+              <div>
+                <InputLabel label="What should we call you?" />
+                <Input
+                  value={nameInput}
+                  onChange={(e) => setNameInput(e.target.value)}
+                  placeholder="Enter your name"
+                />
+              </div>
+
+              {/* Language Selection */}
+              <div>
+                <InputLabel label="Preferred Language" />
+                <Dropdown
+                  value={selectedLanguage?.code}
+                  onChange={(value) => {
+                    const lang = SUPPORTED_LANGUAGES.find(l => l.code === value);
+                    if (lang) setSelectedLanguage(lang);
+                  }}
+                  options={SUPPORTED_LANGUAGES.map(lang => ({
+                    value: lang.code,
+                    label: `${lang.flag} ${lang.name} (${lang.nativeName})`
+                  }))}
+                  placeholder="Select a language"
+                />
+              </div>
+            </div>
+
+            {/* Update Button */}
+            <div className="flex justify-end pt-4">
+              <Button 
+                label="Update Profile" 
+                onClick={handleUpdate} 
+                kind="primary"
+                theme="default"
+                className="rounded-full px-6 !text-white"
+                disabled={
+                  !nameInput.trim() ||
+                  !selectedLanguage || 
+                  (nameInput.trim() === name && selectedLanguage === language)
+                }
+              />
+            </div>
+          </div>
+        </Box>
+
+        {/* Logout Button */}
+        <div className="flex mt-8">
+          <Button 
+            label="Log out" 
+            href="/logout" 
+            kind="secondary" 
+            icon="sign-out" 
+            theme="default" 
+          />
+        </div>
+      </Wrapper>
+    </>
+  );
+};
 
 const Connections: React.FC = () => (
   <Wrapper>

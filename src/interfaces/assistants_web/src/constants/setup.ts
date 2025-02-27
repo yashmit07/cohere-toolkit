@@ -18,6 +18,7 @@ export const LOCAL_STORAGE_KEYS = {
  */
 export const COOKIE_KEYS = {
   authToken: 'authToken',
+  persistedStore: 'persisted-store',
 };
 
 export const MAX_TIMEOUT_PREFETCH = 5000;

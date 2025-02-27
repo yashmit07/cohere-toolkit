@@ -15,9 +15,13 @@ const MainLayout: NextPage<React.PropsWithChildren> = async ({ children }) => {
   if (strategies.length !== 0) {
     const cookieStore = cookies();
     const authToken = cookieStore.get(COOKIE_KEYS.authToken);
+    const storedPrefs = cookieStore.get(COOKIE_KEYS.persistedStore);
 
     if (!authToken) {
       return redirect('/login');
+    }
+    if (!storedPrefs) {
+      return redirect('/onboarding');
     }
   }
 

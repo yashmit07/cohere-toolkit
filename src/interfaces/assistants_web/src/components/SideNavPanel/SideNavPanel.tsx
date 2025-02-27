@@ -17,7 +17,7 @@ import {
 } from '@/components/UI';
 import { env } from '@/env.mjs';
 import { useIsDesktop, useNavigateToNewChat } from '@/hooks';
-import { useSettingsStore } from '@/stores';
+import { useSettingsStore, useUserPreferences } from '@/stores';
 import { cn } from '@/utils';
 
 /**
@@ -34,6 +34,7 @@ export const SideNavPanel: React.FC<{ className?: string }> = ({ className = '' 
   const openHotKeysDialog = () => {
     setIsHotKeysDialogOpen(!isHotKeysDialogOpen);
   };
+  const { name } = useUserPreferences();
 
   return (
     <Transition
@@ -90,6 +91,14 @@ export const SideNavPanel: React.FC<{ className?: string }> = ({ className = '' 
             'items-center': !isLeftPanelOpen,
           })}
         >
+          {isLeftPanelOpen && (
+            <div className="w-full py-1">
+              <Text className="text-lg text-volcanic-400 dark:text-mushroom-600 font-medium">
+                Welcome, {name}!
+              </Text>
+            </div>
+          )}
+
           <AgentsSidePanelButton
             label={
               <div className="group flex w-full items-center justify-between">
