@@ -6,17 +6,20 @@ import { persist } from 'zustand/middleware';
 import { shallow } from 'zustand/shallow';
 
 import { SettingsStore, createSettingsSlice } from '@/stores/slices/settingsSlice';
+import { UserPreferencesStore, createUserPreferencesSlice } from '@/stores/slices/userPreferencesSlice';
 
-type PersistedStore = SettingsStore;
+type PersistedStore = SettingsStore & UserPreferencesStore;
 
 const useEmptyPersistedStore = create<PersistedStore>((...a) => ({
   ...createSettingsSlice(...a),
+  ...createUserPreferencesSlice(...a),
 }));
 
 const usePersistedStore = create<PersistedStore>()(
   persist(
     (...a) => ({
       ...createSettingsSlice(...a),
+      ...createUserPreferencesSlice(...a),
     }),
     {
       name: 'persisted-store',
@@ -59,6 +62,18 @@ export const useSettingsStore = () => {
       setShowCitations: state.setShowCitations,
       isHotKeysDialogOpen: state.isHotKeysDialogOpen,
       setIsHotKeysDialogOpen: state.setIsHotKeysDialogOpen,
+    }),
+    shallow
+  );
+};
+
+export const useUserPreferences = () => {
+  return usePersistedStoresWithHydration(
+    (state) => ({
+      name: state.userPreferences.name,
+      language: state.userPreferences.language,
+      setName: state.setName,
+      setLanguage: state.setLanguage,
     }),
     shallow
   );

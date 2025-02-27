@@ -87,4 +87,4 @@ export const useOutputFiles = () => {
   );
 };
 
-export { useSettingsStore } from '@/stores/persistedStore';
+export { useSettingsStore, useUserPreferences } from '@/stores/persistedStore';
