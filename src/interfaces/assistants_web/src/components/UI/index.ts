@@ -34,3 +34,5 @@ export * from './Text';
 export * from './Textarea';
 export * from './ToggleCard';
 export * from './Tooltip';
+export * from './Box';
+export * from './Notification';
