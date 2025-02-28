@@ -20,7 +20,7 @@ const TEXT_STYLES = {
 const getLanguageOptions = (languages: LANGUAGE[]) => 
   languages.map(lang => ({
     value: lang.code,
-    label: `${lang.flag} ${lang.name} (${lang.nativeName})`
+    label: `${lang.name} (${lang.nativeName})`
   }));
 
 export const LanguageStep: React.FC<LanguageStepProps> = ({ 

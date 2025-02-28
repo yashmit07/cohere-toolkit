@@ -160,7 +160,7 @@ const Profile: React.FC = () => {
                   }}
                   options={SUPPORTED_LANGUAGES.map(lang => ({
                     value: lang.code,
-                    label: `${lang.flag} ${lang.name} (${lang.nativeName})`
+                    label: `${lang.name} (${lang.nativeName})`
                   }))}
                   placeholder="Select a language"
                 />
