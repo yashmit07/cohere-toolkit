@@ -36,7 +36,7 @@ type Props = {
   className?: string;
   onCopy?: VoidFunction;
   onRetry?: VoidFunction;
-  onRegenerate?: VoidFunction;
+  onRegenerate?: (params: { regenerate_action: string }) => void;
   onToggleSynthesis?: VoidFunction;
 };
 
@@ -203,7 +203,31 @@ export const MessageRow = forwardRef<HTMLDivElement, Props>(function MessageRowI
                     'text-volcanic-300 fill-volcanic-300 group-hover/icon-button:fill-mushroom-300',
                     'dark:fill-marble-800 dark:group-hover/icon-button:fill-marble-800'
                   )}
-                  onClick={onRegenerate}
+                  onClick={() => onRegenerate?.({ regenerate_action: 'none' })}
+                />
+              )}
+              {isRegenerationEnabled && (
+                <IconButton
+                  tooltip={{ label: 'Simplify response' }}
+                  iconName="simplify"
+                  className="grid place-items-center rounded hover:bg-mushroom-900 dark:hover:bg-volcanic-200"
+                  iconClassName={cn(
+                    'text-volcanic-300 fill-volcanic-300 group-hover/icon-button:fill-mushroom-300',
+                    'dark:fill-marble-800 dark:group-hover/icon-button:fill-marble-800'
+                  )}
+                  onClick={() => onRegenerate?.({ regenerate_action: 'simplify' })}
+                />
+              )}
+              {isRegenerationEnabled && (
+                <IconButton
+                  tooltip={{ label: 'Expand response' }}
+                  iconName="expand"
+                  className="grid place-items-center rounded hover:bg-mushroom-900 dark:hover:bg-volcanic-200"
+                  iconClassName={cn(
+                    'text-volcanic-300 fill-volcanic-300 group-hover/icon-button:fill-mushroom-300',
+                    'dark:fill-marble-800 dark:group-hover/icon-button:fill-marble-800'
+                  )}
+                  onClick={() => onRegenerate?.({ regenerate_action: 'expand' })}
                 />
               )}
               <CopyToClipboardIconButton
