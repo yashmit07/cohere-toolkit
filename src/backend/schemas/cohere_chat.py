@@ -133,6 +133,11 @@ class CohereChatRequest(BaseChatRequest):
         title="Preferred Language",
         description="The preferred language name for model responses",
     )
+    regenerate_action: Optional[str] = Field(
+        None,
+        title="Regenerate Action",
+        description="The action for regenerating the response (expand, simplify, or none)",
+    )
 
     def model_dump(self, **kwargs):
         """
@@ -142,4 +147,6 @@ class CohereChatRequest(BaseChatRequest):
         data = super().model_dump(**kwargs)
         if 'preferred_language' in data:
             del data['preferred_language']
+        if 'regenerate_action' in data:
+            del data['regenerate_action']
         return data

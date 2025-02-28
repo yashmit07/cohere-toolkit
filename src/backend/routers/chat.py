@@ -93,6 +93,9 @@ async def regenerate_chat_stream(
     if chat_request.preferred_language:
         ctx.with_preferred_language(chat_request.preferred_language)
 
+    if chat_request.regenerate_action:
+        ctx.with_regenerate_action(chat_request.regenerate_action)
+
     if agent_id:
         agent = validate_agent_exists(session, agent_id, ctx.get_user_id())
         ctx.with_agent(Agent.model_validate(agent))

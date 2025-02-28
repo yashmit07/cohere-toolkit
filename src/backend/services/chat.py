@@ -139,10 +139,7 @@ def process_chat(
     preferred_language = ctx.get_preferred_language()
     if preferred_language:
         language_instruction = f"IMPORTANT: You must respond in {preferred_language} language only."
-        if chat_request.preamble:
-            chat_request.preamble = f"{language_instruction}\n\n{chat_request.preamble}"
-        else:
-            chat_request.preamble = language_instruction
+        chat_request.preamble = f"{language_instruction}\n\n{chat_request.preamble}"
 
     # Get position to put next message in
     next_message_position = get_next_message_position(conversation)
@@ -222,6 +219,10 @@ def process_message_regeneration(
     user_id = ctx.get_user_id()
     agent_id = ctx.get_agent_id()
 
+    # Get the action from the chat request and store it in the context
+    if chat_request.regenerate_action:
+        ctx.with_regenerate_action(chat_request.regenerate_action)
+
     if agent_id:
         agent = validate_agent_exists(session, agent_id, user_id)
         ctx.with_agent(Agent.model_validate(agent))
@@ -237,14 +238,24 @@ def process_message_regeneration(
         if not chat_request.temperature:
             chat_request.temperature = agent.temperature
 
+    # Store the base preamble before any modifications
+    base_preamble = chat_request.preamble or ""
+
     # If language preference is specified, modify the preamble to instruct the model
     preferred_language = ctx.get_preferred_language()
+    language_instruction = ""
     if preferred_language:
         language_instruction = f"IMPORTANT: You must respond in {preferred_language} language only."
-        if chat_request.preamble:
-            chat_request.preamble = f"{language_instruction}\n\n{chat_request.preamble}"
-        else:
-            chat_request.preamble = language_instruction
+
+    # Modify the preamble based on the action
+    action = ctx.get_regenerate_action()
+    if action == "expand":
+        chat_request.preamble = f"{language_instruction}{base_preamble}\n\nIMPORTANT: Give a detailed, technical response for an expert audience. Focus on advanced concepts, underlying mechanisms, and theoretical foundations. Use precise terminology, formal definitions, and reference relevant research or mathematical formulations where applicable. Compare methodologies, discuss edge cases, and address limitations."
+    elif action == "simplify":
+        chat_request.preamble = f"{language_instruction}{base_preamble}\n\nIMPORTANT: Explain in the simplest way, as if to a complete beginner. Avoid technical terms, use everyday language, and keep sentences short. Use analogies, metaphors, and real-world examples for clarity. Prioritize simplicity over completeness."
+    elif preferred_language:
+        # If only language preference specified but no action
+        chat_request.preamble = f"{language_instruction}{base_preamble}"
 
     conversation_id = chat_request.conversation_id
     ctx.with_conversation_id(conversation_id)

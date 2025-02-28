@@ -35,7 +35,7 @@ class Context(BaseModel):
     organization: Optional[Organization] = None
     use_global_filtering: Optional[bool] = False
     preferred_language: Optional[str] = None
-    preferred_language_name: Optional[str] = None
+    regenerate_action: Optional[str] = None
 
     def __init__(self):
         super().__init__()
@@ -155,6 +155,10 @@ class Context(BaseModel):
         self.preferred_language = language
         return self
 
+    def with_regenerate_action(self, action: str) -> Self:
+        self.regenerate_action = action
+        return self
+
     def get_organization(self):
         return self.organization
 
@@ -202,3 +206,6 @@ class Context(BaseModel):
 
     def get_preferred_language(self) -> Optional[str]:
         return self.preferred_language
+
+    def get_regenerate_action(self) -> Optional[str]:
+        return self.regenerate_action
