@@ -135,6 +135,17 @@ def process_chat(
 
     ctx.with_conversation_id(conversation.id)
 
+    # If language preference is specified, modify the preamble to instruct the model
+    preferred_language = ctx.get_preferred_language()
+    if preferred_language:
+        # Add a clear instruction to respond in the preferred language
+        language_instruction = f"IMPORTANT: You must respond in {preferred_language} language only."
+        # Prepend the instruction to the existing preamble or use it as the preamble
+        if chat_request.preamble:
+            chat_request.preamble = f"{language_instruction}\n\n{chat_request.preamble}"
+        else:
+            chat_request.preamble = language_instruction
+
     # Get position to put next message in
     next_message_position = get_next_message_position(conversation)
     user_message = create_message(
