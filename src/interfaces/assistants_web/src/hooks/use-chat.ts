@@ -589,7 +589,9 @@ export const useChat = (config?: { onSend?: (msg: string) => void }) => {
 
     const newMessages = messages.slice(0, latestUserMessageIndex + 1);
 
-    const request = getChatRequest('');
+    // Get language preference and pass it as an override
+    const preferredLanguage = languagePreference?.name;
+    const request = getChatRequest('', { preferred_language: preferredLanguage });
 
     const headers = {
       'Deployment-Name': deployment ?? '',

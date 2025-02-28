@@ -40,10 +40,8 @@ async def chat_stream(
     ctx.with_model(chat_request.model)
     agent_id = chat_request.agent_id
     ctx.with_agent_id(agent_id)
-    """
-    Add language preference to context if provided
-    """
-    if hasattr(chat_request, 'preferred_language') and chat_request.preferred_language:
+
+    if chat_request.preferred_language:
         ctx.with_preferred_language(chat_request.preferred_language)
 
     (
@@ -92,10 +90,7 @@ async def regenerate_chat_stream(
     agent_id = chat_request.agent_id
     ctx.with_agent_id(agent_id)
 
-    """
-    Add language preference to context if provided
-    """
-    if hasattr(chat_request, 'preferred_language') and chat_request.preferred_language:
+    if chat_request.preferred_language:
         ctx.with_preferred_language(chat_request.preferred_language)
 
     if agent_id:
@@ -155,10 +150,8 @@ async def chat(
     ctx.with_model(chat_request.model)
     agent_id = chat_request.agent_id
     ctx.with_agent_id(agent_id)
-    """
-    Add language preference to context if provided
-    """
-    if hasattr(chat_request, 'preferred_language') and chat_request.preferred_language:
+
+    if chat_request.preferred_language:
         ctx.with_preferred_language(chat_request.preferred_language)
 
     user_id = ctx.get_user_id()

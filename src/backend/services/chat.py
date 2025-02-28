@@ -138,9 +138,7 @@ def process_chat(
     # If language preference is specified, modify the preamble to instruct the model
     preferred_language = ctx.get_preferred_language()
     if preferred_language:
-        # Add a clear instruction to respond in the preferred language
         language_instruction = f"IMPORTANT: You must respond in {preferred_language} language only."
-        # Prepend the instruction to the existing preamble or use it as the preamble
         if chat_request.preamble:
             chat_request.preamble = f"{language_instruction}\n\n{chat_request.preamble}"
         else:
@@ -238,6 +236,15 @@ def process_message_regeneration(
         # If temperature is not defined in the chat request, use the temperature from the agent
         if not chat_request.temperature:
             chat_request.temperature = agent.temperature
+
+    # If language preference is specified, modify the preamble to instruct the model
+    preferred_language = ctx.get_preferred_language()
+    if preferred_language:
+        language_instruction = f"IMPORTANT: You must respond in {preferred_language} language only."
+        if chat_request.preamble:
+            chat_request.preamble = f"{language_instruction}\n\n{chat_request.preamble}"
+        else:
+            chat_request.preamble = language_instruction
 
     conversation_id = chat_request.conversation_id
     ctx.with_conversation_id(conversation_id)
