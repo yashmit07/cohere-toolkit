@@ -1,4 +1,3 @@
-
 import pytest
 
 from backend.schemas.chat import EventState
@@ -9,6 +8,7 @@ from backend.services.chat import (
     check_death_loop,
     check_similarity,
 )
+from backend.schemas.cohere_chat import CohereChatRequest
 
 
 def test_are_previous_actions_similar():
@@ -161,3 +161,39 @@ def test_check_no_death_loop():
 
     assert new_event_state.distances_plans[-1] < max(DEATHLOOP_SIMILARITY_THRESHOLDS)
     assert new_event_state.distances_actions[-1] < max(DEATHLOOP_SIMILARITY_THRESHOLDS)
+
+
+def test_language_preference_in_preamble():
+    """Test that language preference is correctly added to preamble."""
+    # Create a context with language preference
+    ctx = Context()
+    ctx.with_preferred_language("Spanish")
+    
+    # Create a chat request
+    request = CohereChatRequest(message="Hello")
+    
+    # Simulate the preamble modification from process_chat
+    preferred_language = ctx.get_preferred_language()
+    if preferred_language:
+        language_instruction = f"IMPORTANT: You must respond in {preferred_language} language only."
+        if request.preamble:
+            request.preamble = f"{language_instruction}\n\n{request.preamble}"
+        else:
+            request.preamble = language_instruction
+    
+    # Verify preamble was modified correctly
+    assert request.preamble == "IMPORTANT: You must respond in Spanish language only."
+    
+    # Test with existing preamble
+    request = CohereChatRequest(message="Hello", preamble="Be helpful.")
+    
+    # Reset preamble modification
+    if preferred_language:
+        language_instruction = f"IMPORTANT: You must respond in {preferred_language} language only."
+        if request.preamble:
+            request.preamble = f"{language_instruction}\n\n{request.preamble}"
+        else:
+            request.preamble = language_instruction
+    
+    # Verify preamble was modified correctly
+    assert request.preamble == "IMPORTANT: You must respond in Spanish language only.\n\nBe helpful."

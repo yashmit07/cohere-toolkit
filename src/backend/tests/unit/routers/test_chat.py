@@ -1141,3 +1141,25 @@ def is_valid_uuid(id: str) -> bool:
         return True
     except ValueError:
         return False
+
+
+def test_chat_with_preferred_language(
+    session_client_chat: TestClient,
+    user: User,
+) -> None:
+    """Test that chat endpoint accepts preferred_language parameter."""
+    # Send a chat request with preferred_language
+    response = session_client_chat.post(
+        "/v1/chat",
+        json={
+            "message": "Hello",
+            "preferred_language": "Spanish",
+            "max_tokens": 10,
+        },
+        headers={
+            "User-Id": user.id,
+            "Deployment-Name": CohereDeployment.name(),
+        },
+    )
+    # Verify request was processed successfully
+    assert response.status_code == 200
