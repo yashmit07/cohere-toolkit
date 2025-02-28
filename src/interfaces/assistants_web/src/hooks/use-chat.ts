@@ -59,7 +59,7 @@ type IdToDocument = { [documentId: string]: Document };
 
 type ChatRequestOverrides = Pick<
   CohereChatRequest,
-  'temperature' | 'model' | 'preamble' | 'tools' | 'file_ids' | 'preferred_language'
+  'temperature' | 'model' | 'preamble' | 'tools' | 'file_ids' | 'preferred_language' | 'regenerate_action'
 >;
 
 export type HandleSendChat = (
@@ -576,7 +576,7 @@ export const useChat = (config?: { onSend?: (msg: string) => void }) => {
     }
   };
 
-  const handleRegenerate = async () => {
+  const handleRegenerate = async (params: { regenerate_action: string } = { regenerate_action: 'none' }) => {
     const latestUserMessageIndex = messages.findLastIndex((m) => m.type === MessageType.USER);
 
     if (latestUserMessageIndex === -1 || isStreaming) {
@@ -589,9 +589,12 @@ export const useChat = (config?: { onSend?: (msg: string) => void }) => {
 
     const newMessages = messages.slice(0, latestUserMessageIndex + 1);
 
-    // Get language preference and pass it as an override
+    // Get language preference and pass it as an override along with the action
     const preferredLanguage = languagePreference?.name;
-    const request = getChatRequest('', { preferred_language: preferredLanguage });
+    const request = getChatRequest('', { 
+      preferred_language: preferredLanguage,
+      regenerate_action: params.regenerate_action,
+    });
 
     const headers = {
       'Deployment-Name': deployment ?? '',
