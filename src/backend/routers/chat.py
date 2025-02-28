@@ -1,6 +1,6 @@
 from typing import Any, Generator
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Request
 from sse_starlette.sse import EventSourceResponse
 
 from backend.chat.custom.custom import CustomChat
@@ -40,6 +40,11 @@ async def chat_stream(
     ctx.with_model(chat_request.model)
     agent_id = chat_request.agent_id
     ctx.with_agent_id(agent_id)
+    """
+    Add language preference to context if provided
+    """
+    if hasattr(chat_request, 'preferred_language') and chat_request.preferred_language:
+        ctx.with_preferred_language(chat_request.preferred_language)
 
     (
         session,
@@ -86,6 +91,12 @@ async def regenerate_chat_stream(
 
     agent_id = chat_request.agent_id
     ctx.with_agent_id(agent_id)
+
+    """
+    Add language preference to context if provided
+    """
+    if hasattr(chat_request, 'preferred_language') and chat_request.preferred_language:
+        ctx.with_preferred_language(chat_request.preferred_language)
 
     if agent_id:
         agent = validate_agent_exists(session, agent_id, ctx.get_user_id())
@@ -144,6 +155,12 @@ async def chat(
     ctx.with_model(chat_request.model)
     agent_id = chat_request.agent_id
     ctx.with_agent_id(agent_id)
+    """
+    Add language preference to context if provided
+    """
+    if hasattr(chat_request, 'preferred_language') and chat_request.preferred_language:
+        ctx.with_preferred_language(chat_request.preferred_language)
+
     user_id = ctx.get_user_id()
 
     if agent_id:
