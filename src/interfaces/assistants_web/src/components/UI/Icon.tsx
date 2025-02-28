@@ -63,6 +63,8 @@ import {
   Volume,
   Warning,
   Web,
+  Simplify,
+  Expand,
 } from '@/assets/icons';
 import { Github } from '@/assets/icons/Github';
 import { cn } from '@/utils';
@@ -132,6 +134,8 @@ export const IconList = [
   'gmail',
   'github',
   'sharepoint',
+  'simplify',
+  'expand',
 ] as const;
 
 export type IconName = (typeof IconList)[number];
@@ -494,6 +498,16 @@ const getIcon = (name: IconName, kind: IconKind): React.ReactNode => {
     ['sharepoint']: (
       <AccessibleIcon label="Sharepoint">
         <Sharepoint />
+      </AccessibleIcon>
+    ),
+    ['simplify']: (
+      <AccessibleIcon label="Simplify">
+        <Simplify />
+      </AccessibleIcon>
+    ),
+    ['expand']: (
+      <AccessibleIcon label="Expand">
+        <Expand />
       </AccessibleIcon>
     ),
     ['hot-keys']: (

@@ -61,3 +61,5 @@ export * from './Web';
 export * from './Slack';
 export * from './Gmail';
 export * from './Sharepoint';
+export * from './Expand';
+export * from './Simplify';
