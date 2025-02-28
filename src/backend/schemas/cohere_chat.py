@@ -128,3 +128,18 @@ class CohereChatRequest(BaseChatRequest):
         title="Agent ID",
         description="The agent ID to use for the chat.",
     )
+    preferred_language: Optional[str] = Field(
+        None,
+        title="Preferred Language",
+        description="The preferred language name for model responses",
+    )
+
+    def model_dump(self, **kwargs):
+        """
+        Override model_dump to remove preferred_language field before passing to Cohere API.
+        This prevents the 'unexpected keyword argument' error.
+        """
+        data = super().model_dump(**kwargs)
+        if 'preferred_language' in data:
+            del data['preferred_language']
+        return data

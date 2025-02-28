@@ -34,6 +34,8 @@ class Context(BaseModel):
     organization_id: Optional[str] = None
     organization: Optional[Organization] = None
     use_global_filtering: Optional[bool] = False
+    preferred_language: Optional[str] = None
+    preferred_language_name: Optional[str] = None
 
     def __init__(self):
         super().__init__()
@@ -149,6 +151,10 @@ class Context(BaseModel):
         self.use_global_filtering = False
         return self
 
+    def with_preferred_language(self, language: str) -> Self:
+        self.preferred_language = language
+        return self
+
     def get_organization(self):
         return self.organization
 
@@ -193,3 +199,6 @@ class Context(BaseModel):
 
     def get_agent_tool_metadata(self):
         return self.agent_tool_metadata
+
+    def get_preferred_language(self) -> Optional[str]:
+        return self.preferred_language
