@@ -404,6 +404,10 @@ export type CohereChatRequest = {
    * Preferred language for the model's responses
    */
   preferred_language?: string | null;
+  /**
+   * The action for regenerating the response (expand, simplify, or none)
+   */
+  regenerate_action?: string | null;
 }
 
 /**

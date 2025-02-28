@@ -804,6 +804,18 @@ export const $CohereChatRequest = {
       title: 'Preferred Language',
       description: 'The preferred language name for model responses',
     },
+    regenerate_action: {
+      anyOf: [
+        {
+          type: 'string',
+        },
+        {
+          type: 'null',
+        },
+      ],
+      title: 'Regenerate Action',
+      description: 'The action for regenerating the response (expand, simplify, or none)',
+    },
   },
   type: 'object',
   required: ['message'],
