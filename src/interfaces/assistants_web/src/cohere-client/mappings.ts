@@ -12,5 +12,6 @@ export const mapToChatRequest = (request: CohereChatRequest): CohereChatRequest 
     documents: request.documents,
     tools: request.tools,
     file_ids: request.file_ids,
+    preferred_language: request.preferred_language,
   };
 };

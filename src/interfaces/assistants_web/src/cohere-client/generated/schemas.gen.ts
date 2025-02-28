@@ -792,6 +792,18 @@ export const $CohereChatRequest = {
       title: 'Agent ID',
       description: 'The agent ID to use for the chat.',
     },
+    preferred_language: {
+      anyOf: [
+        {
+          type: 'string',
+        },
+        {
+          type: 'null',
+        },
+      ],
+      title: 'Preferred Language',
+      description: 'The preferred language name for model responses',
+    },
   },
   type: 'object',
   required: ['message'],

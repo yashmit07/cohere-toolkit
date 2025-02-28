@@ -400,7 +400,11 @@ export type CohereChatRequest = {
    * The agent ID to use for the chat.
    */
   agent_id?: string | null;
-};
+  /**
+   * Preferred language for the model's responses
+   */
+  preferred_language?: string | null;
+}
 
 /**
  * Schema for a public conversation file
