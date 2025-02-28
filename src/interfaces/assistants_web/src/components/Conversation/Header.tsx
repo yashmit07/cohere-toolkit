@@ -8,7 +8,7 @@ import { Button, Icon, IconButton, Logo, Text } from '@/components/UI';
 import { useContextStore } from '@/context';
 import { env } from '@/env.mjs';
 import { useBrandedColors } from '@/hooks';
-import { useConversationStore, useSettingsStore } from '@/stores';
+import { useConversationStore, useSettingsStore, useUserPreferences } from '@/stores';
 import { cn } from '@/utils';
 
 type Props = {
@@ -22,6 +22,7 @@ export const Header: React.FC<Props> = ({ agent }) => {
   const [init, setInit] = useState(false);
   const { setLeftPanelOpen, setRightPanelOpen } = useSettingsStore();
   const { open } = useContextStore();
+  const { language } = useUserPreferences();
   const { text, bg, contrastText, lightText, fill, lightFill, dark, light } = useBrandedColors(
     agent?.id
   );
@@ -80,7 +81,7 @@ export const Header: React.FC<Props> = ({ agent }) => {
               <Text
                 styleAs="label-sm"
                 className={cn(
-                  'rounded bg-mushroom-950 px-2  py-1 font-bold uppercase dark:bg-volcanic-200',
+                  'rounded bg-mushroom-950 px-2 py-1 font-bold uppercase dark:bg-volcanic-200',
                   text,
                   dark(lightText)
                 )}
@@ -90,6 +91,32 @@ export const Header: React.FC<Props> = ({ agent }) => {
             )}
           </div>
           <section className="flex items-center gap-4">
+            <div className="flex items-center gap-2 mr-2">
+              <Text
+                styleAs="label-sm"
+                className={cn(
+                  'rounded bg-mushroom-950 px-2 py-1 font-bold uppercase dark:bg-volcanic-200 inline-flex items-center',
+                  text,
+                  dark(lightText)
+                )}
+              >
+                <span>{language?.name}</span>
+              </Text>
+              
+              {language?.code !== 'en' && (
+                <Text
+                  styleAs="label-sm"
+                  className={cn(
+                    'rounded bg-mushroom-950 px-2 py-1 font-bold uppercase dark:bg-volcanic-200 inline-flex items-center',
+                    text,
+                    dark(lightText)
+                  )}
+                >
+                  <span>{language?.nativeName}</span>
+                </Text>
+              )}
+            </div>
+            
             {id && (
               <Button
                 kind="secondary"

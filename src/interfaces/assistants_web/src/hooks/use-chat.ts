@@ -50,6 +50,7 @@ import {
   replaceTextWithCitations,
   shouldUpdateConversationTitle,
 } from '@/utils';
+import { usePersistedStore } from '@/stores/persistedStore';
 
 const USER_ERROR_MESSAGE = 'Something went wrong. This has been reported. ';
 const ABORT_REASON_USER = 'USER_ABORTED';
@@ -58,7 +59,7 @@ type IdToDocument = { [documentId: string]: Document };
 
 type ChatRequestOverrides = Pick<
   CohereChatRequest,
-  'temperature' | 'model' | 'preamble' | 'tools' | 'file_ids'
+  'temperature' | 'model' | 'preamble' | 'tools' | 'file_ids' | 'preferred_language'
 >;
 
 export type HandleSendChat = (
@@ -105,6 +106,10 @@ export const useChat = (config?: { onSend?: (msg: string) => void }) => {
   const [isStreamingToolEvents, setIsStreamingToolEvents] = useState(false);
   const { streamingMessage, setStreamingMessage } = useStreamingStore();
   const { agentId } = useChatRoutes();
+
+  // Get the user's language preference
+  const { userPreferences } = usePersistedStore();
+  const languagePreference = userPreferences.language;
 
   useEffect(() => {
     return () => {
@@ -496,10 +501,12 @@ export const useChat = (config?: { onSend?: (msg: string) => void }) => {
 
   const getChatRequest = (message: string, overrides?: ChatRequestOverrides): CohereChatRequest => {
     const { tools: overrideTools, ...restOverrides } = overrides ?? {};
-
+    
     const requestTools = overrideTools ?? tools ?? undefined;
+    // Get language preference
+    const preferredLanguage = languagePreference?.name;
 
-    return {
+    const request: CohereChatRequest = {
       message,
       conversation_id: currentConversationId,
       tools: requestTools
@@ -510,8 +517,10 @@ export const useChat = (config?: { onSend?: (msg: string) => void }) => {
       preamble,
       model,
       agent_id: agentId,
+      preferred_language: preferredLanguage,
       ...restOverrides,
     };
+    return request;
   };
 
   const handleChat: HandleSendChat = async (

@@ -78,3 +78,5 @@ export const useUserPreferences = () => {
     shallow
   );
 };
+
+export { usePersistedStore };
